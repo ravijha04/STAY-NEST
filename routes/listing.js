@@ -4,6 +4,7 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const {listingSchema} = require("../schema.js");
 const Listing = require("../models/listing.js");
+const {isLoggedIn} = require("../middleware.js");
 
 const validateListing = (req,res,next)=>{
     let {error} = listingSchema.validate(req.body);
@@ -23,7 +24,7 @@ res.render("listings/index.ejs",{allListings});
 }));
 
 //NEW ROUTE
-router.get("/new", (req,res)=>{
+router.get("/new",isLoggedIn , (req,res)=>{
 res.render("listings/new.ejs");
 });
 //SHOW ROUTE
@@ -59,7 +60,7 @@ res.redirect("/listings");
 // }));
 
 //EDIT ROUTE
-router.get("/:id/edit",wrapAsync(async (req,res)=>{
+router.get("/:id/edit",isLoggedIn , wrapAsync(async (req,res)=>{
 let {id} = req.params;
  const listing = await Listing.findById(id);
   if(!listing){
@@ -71,7 +72,7 @@ let {id} = req.params;
 }));
 
 //UPDATE ROUTE BUG FIX
-router.put("/:id",validateListing,wrapAsync( async (req,res)=>{
+router.put("/:id",isLoggedIn ,validateListing,wrapAsync( async (req,res)=>{
     let {id} = req.params;
     req.body.listing.image = {
         filename : "listingimage",
@@ -88,7 +89,7 @@ router.put("/:id",validateListing,wrapAsync( async (req,res)=>{
 //   res.redirect(`/listings/${id}`);
 // }));
 //DELETE ROUTE
-router.delete("/:id", wrapAsync(async (req,res)=>{
+router.delete("/:id",isLoggedIn , wrapAsync(async (req,res)=>{
     let {id} = req.params;
    let deletedListing = await  Listing.findByIdAndDelete(id);
    console.log(deletedListing);

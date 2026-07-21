@@ -9,12 +9,15 @@
         <div class="card col-6 offset-3 show-card listing-card">
             <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="Listing_image">
             <div class="card-body">
-                <p class="card-text">
-                    <%= listing.description %> <br>
-                        &#8377; <%= listing.price.toLocaleString("en-IN")%> <br>
-                            <%= listing.location %> <br>
-                                <%= listing.country %> <br>
-                </p>
+                <p class="card-text">Owned by
+                    <i><%= listing.owner.username %></i></p>
+                
+                    <p class="card-text"> <%= listing.description %></p>
+                   <p class="card-text"> &#8377; <%= listing.price.toLocaleString("en-IN")%> </p>
+                        <p class="card-text"><%= listing.location %> </p>
+                            <p class="card-text"><%= listing.country %> </p>
+                                
+        
             </div>
         </div>
         <!-- <ul>
@@ -26,6 +29,8 @@
     </ul> -->
 
 
+    
+<% if(currUser && listing.owner._id.equals(currUser._id)){%>
         <div class="btns">
             <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">EDIT</a>
 
@@ -34,9 +39,12 @@
                 <button class="btn btn-dark offset-5">DELETE</button>
             </form>
         </div>
+        <%}%>
+    
         <div class="col-8 offset-3 mb-3">
             <hr>
             <!-- setting up review form -->
+             <% if(currUser){%>
             <h4>Leave a Review</h4>
             <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
                 <div class="mb-3 mt-3">
@@ -52,6 +60,8 @@
                 <button class="btn btn-outline-dark">Submit</button>
             </form>
             <hr>
+        <%}%>
+            
             <!-- <h4>ALL REVIEWS</h4>
             <ul>
                 <% for(review of listing.reviews) {%>
@@ -65,7 +75,7 @@
                 <% for(review of listing.reviews) {%>
                     <div class="card col-5 ms-3 mb-3">
                         <div class="card-body">
-                            <h5 class="card-title">Ravi Jha</h5>
+                            <h5 class="card-title">@<%= review.author.username %></h5>
                             <p class="card-text">
                                 <%= review.comment %>
                             </p>
